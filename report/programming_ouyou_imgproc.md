@@ -23,8 +23,9 @@ convert lena.png sepia tone 100% out.png
 ```
 また，入出力は下記となった．
 
-<img src="lena.jpg" alt="lena.jpg" width="100px">
-<img src="sepia.jpg" alt="lena.jpg" width="100px">
+<img src="lena.jpg" alt="lena.jpg" width="300px">
+<img src="sepia.jpg" alt="lena.jpg" width="300px">
+<img src="out1.png" alt="out1.png" width="300px">
 
 図：（左）入力画像，（右）セピア化画像
 
@@ -35,8 +36,8 @@ convert lena.png sepia tone 100% out.png
 ```bash
 convert -median 5 lena.ppm out.png
 ```
-<img src="ori.png" alt="ori.png" width="50%">
-<img src="impulse.png" alt="impulse.png" width="100px">
+<img src="ori.png" alt="ori.png" width="300px">
+<img src="impulse.png" alt="impulse.png" width="300px">
 
 図：（左）入力画像，（右）メディアンフィルタを使った画像
 
