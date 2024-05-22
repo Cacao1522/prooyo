@@ -19,25 +19,32 @@ CSEを使用する場合はその旨を記述し省略可
 imagemagickを使って画像をセピアカラーに変換した．
 コマンドは下記である
 ```bash
-convert lena.png sepia tone 100% out.png
+convert lena.png out tone 100% out.png
+convert -rotate 45 lena_noiseless.png out1.png
+convert lena_noiseless.png -threshold 30% out2.png
+convert lena_noiseless.png -canny 0x1+5%+20% out3.png
+convert -modulate 120 150 50 lena_noiseless.png out4.png
 ```
 また，入出力は下記となった．
 
-<img src="lena.jpg" alt="lena.jpg" width="300px">
-<img src="sepia.jpg" alt="lena.jpg" width="300px">
-<img src="out1.png" alt="out1.png" width="300px">
+<img src="lena.jpg" alt="lena.jpg" width="150px">
+<img src="out1.png" alt="out.png" width="150px">
+<img src="out2.png" alt="out.png" width="150px">
+<img src="out3.png" alt="out.png" width="150px">
+<img src="out4.png" alt="out.png" width="150px">
 
 図：（左）入力画像，（右）セピア化画像
 
 **そのほかいくつかやってみること．**
 
 ## image/lena.ppm の 画像中 の インパルス雑音を消せ．
+メディアンフィルタを使ってインパルス雑音を消した.
 コマンドは下記である
 ```bash
 convert -median 5 lena.ppm out.png
 ```
-<img src="ori.png" alt="ori.png" width="300px">
-<img src="impulse.png" alt="impulse.png" width="300px">
+<img src="ori.png" alt="ori.png" width="200px">
+<img src="impulse.png" alt="impulse.png" width="200px">
 
 図：（左）入力画像，（右）メディアンフィルタを使った画像
 
