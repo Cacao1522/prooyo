@@ -6,23 +6,23 @@ for image in $1/test/*.ppm; do
     name="imgproc/"$bname
     x=0    	#
     echo $name
-    convert "${image}" "${name}"  # 何もしない画像処理
+    #convert "${image}" "${name}"  # 何もしない画像処理
 #   convert -blur 2x6 "${image}" "${name}"
-    convert -median 3 "${image}" "${name}"
+    #convert -median 3 "${image}" "${name}"
 #   convert -auto-level "${image}" "${name}"
 #   convert -equalize "${image}" "${name}"
-    #convert -equalize "${image}" "${name}"
-    #convert "${image}" -canny 0x1+5%+20% "${name}"
+    convert -equalize "${image}" "${name}"
+
     rotation=0
     echo $bname:
     for template in $1/*.ppm; do
 	echo `basename ${template}`
 	if [ $x = 0 ]
 	then
-	    ./matching $name "${template}" $rotation 0.5 cpg 
+	    ./matching $name "${template}" $rotation 0.7 cpg 
 	    x=1
 	else
-	    ./matching $name "${template}" $rotation 0.5 pg 
+	    ./matching $name "${template}" $rotation 0.7 pg 
 	fi
     done
     echo ""
