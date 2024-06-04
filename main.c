@@ -7,8 +7,10 @@
 // #include <omp.h>
 
 void templateMatchingGray(Image *src, Image *template, Point *position,
-                          double *distance) {
-    if (src->channel != 1 || template->channel != 1) {
+                          double *distance)
+{
+    if (src->channel != 1 || template->channel != 1)
+    {
         fprintf(stderr, "src and/or templeta image is not a gray image.\n");
         return;
     }
@@ -17,20 +19,25 @@ void templateMatchingGray(Image *src, Image *template, Point *position,
     int ret_x = 0;
     int ret_y = 0;
     int x, y, i, j;
-    for (y = 0; y < (src->height - template->height); y++) {
-        for (x = 0; x < src->width - template->width; x++) {
+    for (y = 0; y < (src->height - template->height); y++)
+    {
+        for (x = 0; x < src->width - template->width; x++)
+        {
             int distance = 0;
             // SSD
-            for (j = 0; j < template->height; j++) {
-                for (i = 0; i < template->width; i++) {
+            for (j = 0; j < template->height; j++)
+            {
+                for (i = 0; i < template->width; i++)
+                {
                     // if (template->data[j * template->width + i] == 0)
-                    //     continue;  // テンプレートが黒ならスキップ
+                    //     continue; // テンプレートが黒ならスキップ
                     int v = (src->data[(y + j) * src->width + (x + i)] -
                              template->data[j * template->width + i]);
                     distance += v * v;
                 }
             }
-            if (distance < min_distance) {
+            if (distance < min_distance)
+            {
                 min_distance = distance;
                 ret_x = x;
                 ret_y = y;
@@ -44,8 +51,10 @@ void templateMatchingGray(Image *src, Image *template, Point *position,
 }
 
 void templateMatchingColor(Image *src, Image *template, Point *position,
-                           double *distance) {
-    if (src->channel != 3 || template->channel != 3) {
+                           double *distance)
+{
+    if (src->channel != 3 || template->channel != 3)
+    {
         fprintf(stderr, "src and/or templeta image is not a color image.\n");
         return;
     }
@@ -54,12 +63,16 @@ void templateMatchingColor(Image *src, Image *template, Point *position,
     int ret_x = 0;
     int ret_y = 0;
     int x, y, i, j;
-    for (y = 0; y < (src->height - template->height); y++) {
-        for (x = 0; x < src->width - template->width; x++) {
+    for (y = 0; y < (src->height - template->height); y++)
+    {
+        for (x = 0; x < src->width - template->width; x++)
+        {
             int distance = 0;
             // SSD
-            for (j = 0; j < template->height; j++) {
-                for (i = 0; i < template->width; i++) {
+            for (j = 0; j < template->height; j++)
+            {
+                for (i = 0; i < template->width; i++)
+                {
                     int pt = 3 * ((y + j) * src->width + (x + i));
                     int pt2 = 3 * (j * template->width + i);
                     int r = (src->data[pt + 0] - template->data[pt2 + 0]);
@@ -69,7 +82,8 @@ void templateMatchingColor(Image *src, Image *template, Point *position,
                     distance += (r * r + g * g + b * b);
                 }
             }
-            if (distance < min_distance) {
+            if (distance < min_distance)
+            {
                 min_distance = distance;
                 ret_x = x;
                 ret_y = y;
@@ -83,8 +97,10 @@ void templateMatchingColor(Image *src, Image *template, Point *position,
 }
 
 // test/beach3.ppm template /airgun_women_syufu.ppm 0 0.5 cwp
-int main(int argc, char **argv) {
-    if (argc < 5) {
+int main(int argc, char **argv)
+{
+    if (argc < 5)
+    {
         fprintf(stderr,
                 "Usage: templateMatching src_image temlate_image rotation "
                 "threshold option(c,w,p,g)\n");
@@ -138,12 +154,17 @@ int main(int argc, char **argv) {
     int isPrintResult = 0;
     int isGray = 0;
 
-    if (argc == 6) {
+    if (argc == 6)
+    {
         char *p = NULL;
-        if (p = strchr(argv[5], 'c') != NULL) clearResult(output_name_txt);
-        if (p = strchr(argv[5], 'w') != NULL) isWriteImageResult = 1;
-        if (p = strchr(argv[5], 'p') != NULL) isPrintResult = 1;
-        if (p = strchr(argv[5], 'g') != NULL) isGray = 1;
+        if (p = strchr(argv[5], 'c') != NULL)
+            clearResult(output_name_txt);
+        if (p = strchr(argv[5], 'w') != NULL)
+            isWriteImageResult = 1;
+        if (p = strchr(argv[5], 'p') != NULL)
+            isPrintResult = 1;
+        if (p = strchr(argv[5], 'g') != NULL)
+            isGray = 1;
     }
 
     Image *img = readPXM(input_file);
@@ -152,7 +173,8 @@ int main(int argc, char **argv) {
     Point result;
     double distance = 0.0;
 
-    if (isGray && img->channel == 3) {
+    if (isGray && img->channel == 3)
+    {
         Image *img_gray = createImage(img->width, img->height, 1);
         Image *template_gray =
             createImage(template->width, template->height, 1);
@@ -163,19 +185,24 @@ int main(int argc, char **argv) {
 
         freeImage(img_gray);
         freeImage(template_gray);
-    } else {
+    }
+    else
+    {
         templateMatchingColor(img, template, &result, &distance);
     }
 
-    if (distance < threshold) {
+    if (distance < threshold)
+    {
         writeResult(output_name_txt, getBaseName(template_file), result,
                     template->width, template->height, rotation, distance);
-        if (isPrintResult) {
+        if (isPrintResult)
+        {
             printf("[Found    ] %s %d %d %d %d %d %f\n",
                    getBaseName(template_file), result.x, result.y,
                    template->width, template->height, rotation, distance);
         }
-        if (isWriteImageResult) {
+        if (isWriteImageResult)
+        {
             drawRectangle(img, result, template->width, template->height);
 
             if (img->channel == 3)
@@ -185,8 +212,11 @@ int main(int argc, char **argv) {
             printf("out: %s", output_name_img);
             writePXM(output_name_img, img);
         }
-    } else {
-        if (isPrintResult) {
+    }
+    else
+    {
+        if (isPrintResult)
+        {
             printf("[Not found] %s %d %d %d %d %d %f\n",
                    getBaseName(template_file), result.x, result.y,
                    template->width, template->height, rotation, distance);
