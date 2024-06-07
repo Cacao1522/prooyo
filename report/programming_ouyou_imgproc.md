@@ -133,32 +133,32 @@ for (j = 0; j < template->height; j++)
 
 （実際は効果があるかは知りません．）
 
-```sh
-#!/bin/sh
-# imagemagickで何か画像処理をして，/imgprocにかきこみ，テンプレートマッチング
-# 最終テストは，直下のforループを次に変更 for image in $1/final/*.ppm; do
-for image in $1/test/*.ppm; do
-    bname=`basename ${image}`
-    name="imgproc/"$bname
-    x=0    	#
-    echo $name
-   convert -equalize "${image}" "${name}" # ここを変更した．
-    rotation=0
-    echo $bname:
-    for template in $1/*.ppm; do
-	echo `basename ${template}`
-	if [ $x = 0 ]
-	then
-	    ./matching $name "${template}" rotation 0.5 cp 
-	    x=1
-	else
-	    ./matching $name "${template}" rotation 0.5 p 
-	fi
-    done
-    echo ""
-done
-wait
-
+```c
+for (y = 0; y < (src->height - template->height); y++)
+    {
+        for (x = 0; x < src->width - template->width; x++)
+        {
+            int distance = 0;
+            // SSD
+            for (j = 0; j < template->height; j++)
+            {
+                for (i = 0; i < template->width; i++)
+                {
+                    if (template->data[j * template->width + i] == 0)
+                        continue; // テンプレートが黒ならスキップ
+                    int v = (src->data[(y + j) * src->width + (x + i)] -
+                             template->data[j * template->width + i]);
+                    distance += v * v;
+                }
+            }
+            if (distance < min_distance)
+            {
+                min_distance = distance;
+                ret_x = x;
+                ret_y = y;
+            }
+        }
+    }
 ```
 # レベル５
 
@@ -166,13 +166,62 @@ wait
 以下に書き直したPythonコードを示す．
 
 ほぼジョークの類ですが，全部書き直してもいいです．制限は何もありません．
-
-```py
-for i in range(5):
-    print("Hello World")
+画像を加工してもできそうだけどテンプレートを加工した方が速い
+```sh
+for image in $1/test/*.ppm; do
+    echo `basename ${image}`
+    
+    x=0    	#
+    for i in 50 100 200; do
+        echo $i%
+        for template in $1/*.ppm; do
+        bname=`basename ${template}`
+        name="imgproc/"$bname
+        echo $name
+        convert -resize $i% "${template}" "${name}"  # 拡大縮小
+        rotation=0
+        echo $bname:
+        if [ $x = 0 ]
+        then
+            ./matching "${image}" $name $rotation 0.5 cpg 
+            x=1
+        else
+            ./matching "${image}" $name $rotation 0.5 pg 
+        fi
+        done
+        echo ""
+    done
+done
+wait
 ```
 # レベル６
-
+```sh
+for image in $1/test/*.ppm; do
+    echo `basename ${image}`
+    
+    x=0    	#
+    for i in 0 90 180 270; do
+        echo $i°
+        for template in $1/*.ppm; do
+        bname=`basename ${template}`
+        name="imgproc/"$bname
+        echo $name
+        convert -rotate $i% "${template}" "${name}"  # 回転
+        rotation=0
+        echo $bname:
+        if [ $x = 0 ]
+        then
+            ./matching "${image}" $name $rotation 0.5 cpg 
+            x=1
+        else
+            ./matching "${image}" $name $rotation 0.5 pg 
+        fi
+        done
+        echo ""
+    done
+done
+wait
+```
 # レベル７
 
 # FINAL

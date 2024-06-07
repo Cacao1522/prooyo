@@ -2,28 +2,27 @@
 # imagemagickで何か画像処理をして，/imgprocにかきこみ，テンプレートマッチング
 # 最終テストは，直下のforループを次に変更 for image in $1/final/*.ppm; do
 for image in $1/test/*.ppm; do
-    bname=`basename ${image}`
-    name="imgproc/"$bname
+    echo `basename ${image}`
+    
     x=0    	#
-    echo $name
-    convert "${image}" "${name}"  # 何もしない画像処理
-#   convert -blur 2x6 "${image}" "${name}"
-    #convert -median 3 "${image}" "${name}"
-#   convert -auto-level "${image}" "${name}"
-#   convert -equalize "${image}" "${name}"
-
-    rotation=0
-    echo $bname:
-    for template in $1/*.ppm; do
-	echo `basename ${template}`
-	if [ $x = 0 ]
-	then
-	    ./matching $name "${template}" $rotation 0.3 cpg 
-	    x=1
-	else
-	    ./matching $name "${template}" $rotation 0.3 pg 
-	fi
+    for i in 50 100 200; do
+        echo $i%
+        for template in $1/*.ppm; do
+        bname=`basename ${template}`
+        name="imgproc/"$bname
+        echo $name
+        convert -resize $i% "${template}" "${name}"  # 拡大縮小
+        rotation=0
+        echo $bname:
+        if [ $x = 0 ]
+        then
+            ./matching "${image}" $name $rotation 0.5 cpg 
+            x=1
+        else
+            ./matching "${image}" $name $rotation 0.5 pg 
+        fi
+        done
+        echo ""
     done
-    echo ""
 done
 wait
