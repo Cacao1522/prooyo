@@ -2,8 +2,9 @@
 # imagemagickで何か画像処理をして，/imgprocにかきこみ，テンプレートマッチング
 # 最終テストは，直下のforループを次に変更 for image in $1/final/*.ppm; do
 for image in $1/test/*.ppm; do
-    echo `basename ${image}`
-    
+    # echo `basename ${image}`
+    bname=`basename ${image}`
+    name="imgproc/"$bname
     x=0    	#
     for i in 50 100 200; do
         echo $i%
